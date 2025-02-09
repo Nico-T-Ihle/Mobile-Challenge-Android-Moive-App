@@ -2,8 +2,10 @@ package com.example.mobilechallange2023.Screens
 
 import com.example.mobilechallange2023.DataModel.Movie
 import MovieViewModel
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.mobilechallange2023.Components.MovieListItem
 import com.example.mobilechallange2023.Components.UserProfile
@@ -51,15 +56,20 @@ fun ExampleBox(
     shape: Shape,
     onNavigate: () -> Unit,
 ){
-    Column(modifier = Modifier
-        .wrapContentSize(Alignment.Center)
+    Column(
+        modifier = Modifier
+            .wrapContentSize(Alignment.Center)
     ) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(12.dp))
                 .size(48.dp)
-                .clip(shape)
-                .shadow(8.dp, RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .shadow(
+                    elevation = 16.dp,
+                    shape = RoundedCornerShape(12.dp),
+                    clip = true
+                )
                 .background(Color.White),
             contentAlignment = Alignment.Center
         ) {
@@ -81,6 +91,7 @@ fun HomeScreen(
     onNavigate: (Movie) -> Unit,
     viewModel: MovieViewModel,
     onNav: () -> Unit,
+    navController: NavHostController
 ) {
     LazyColumn(
         modifier = Modifier
@@ -103,8 +114,8 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(start = 8.dp)
                     ) {
-                        Text(text = "Hello \uD83D\uDC4B")
-                        Text(text = "Jane Doe", fontWeight = FontWeight.Bold)
+                        Text(text = "Hello \uD83D\uDC4B", fontSize = 16.sp)
+                        Text(text = "Jane Doe", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     }
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -139,7 +150,27 @@ fun HomeScreen(
                     modifier = Modifier
                 ) {
                     viewModel.movies.forEachIndexed { index, movie ->
-                        TiltedBox(movie.posterUrl)
+                        TiltedBox(movie.posterUrl,
+                            onNavigate = {
+                            val route = "MovieDetailScreen/" +
+                                    Uri.encode(movie.title) + "/" +
+                                    movie.year + "/" +
+                                    movie.rating + "/" +
+                                    Uri.encode(movie.posterUrl) + "/" +
+                                    movie.revenue + "/" +
+                                    Uri.encode(movie.releaseDate) + "/" +
+                                    Uri.encode(movie.director?.name ?: "N/A") + "/" +
+                                    Uri.encode(movie.director?.pictureUrl ?: "") + "/" +
+                                    movie.runtime + "/" +
+                                    Uri.encode(movie.overview ?: "") + "/" +
+                                    movie.reviews + "/" +
+                                    movie.budget + "/" +
+                                    Uri.encode(movie.language ?: "N/A") + "/" +
+                                    Uri.encode(movie.genres?.joinToString(",") ?: "")
+
+                            println("Navigating to: $route")
+                            navController.navigate(route)
+                        },)
                         if (index < viewModel.movies.size - 1) {
                             Spacer(modifier = Modifier.width(30.dp))
                         }
@@ -151,7 +182,7 @@ fun HomeScreen(
         item {
             Column(
                 modifier = Modifier
-                    .padding(top = 40.dp)
+                    .padding(top = 40.dp, bottom = 20.dp)
             ) {
                 Text(
                     text = buildAnnotatedString {
@@ -166,24 +197,56 @@ fun HomeScreen(
 
         items(viewModel.movies) { movie ->
             MovieListItem(
-                onNavigate = {onNavigate(movie)},
+                onNavigate = {
+                    val route = "MovieDetailScreen/" +
+                            Uri.encode(movie.title) + "/" +
+                            movie.year + "/" +
+                            movie.rating + "/" +
+                            Uri.encode(movie.posterUrl) + "/" +
+                            movie.revenue + "/" +
+                            Uri.encode(movie.releaseDate) + "/" +
+                            Uri.encode(movie.director?.name ?: "N/A") + "/" +
+                            Uri.encode(movie.director?.pictureUrl ?: "") + "/" +
+                            movie.runtime + "/" +
+                            Uri.encode(movie.overview ?: "") + "/" +
+                            movie.reviews + "/" +
+                            movie.budget + "/" +
+                            Uri.encode(movie.language ?: "N/A") + "/" +
+                            Uri.encode(movie.genres?.joinToString(",") ?: "")
+
+                    println("Navigating to: $route")
+                    navController.navigate(route)
+                },
                 moviePoster = movie.posterUrl,
                 title = movie.title,
                 releaseDate = movie.year.toString(),
                 rating = movie.rating.toDouble()
             )
         }
+
+
     }
 }
 
 
 @Composable
-fun TiltedBox(title: String) {
+fun TiltedBox(
+    title: String,
+    onNavigate: (String) -> Unit,
+) {
+    val route = "MovieDetailScreen/" +
+            Uri.encode(title)
    Column(
        modifier = Modifier
+           .clickable { onNavigate(route) }
            .width(182.dp)
            .height(270.dp)
-           .shadow(12.dp, RoundedCornerShape(8.dp))
+           .shadow(
+               elevation = 35.dp,
+               ambientColor = Color.Gray,
+               spotColor = Color.Gray,
+               shape = RoundedCornerShape(20.dp)
+           )
    ) {
        Image(
            painter = rememberAsyncImagePainter(title),
@@ -195,9 +258,4 @@ fun TiltedBox(title: String) {
    }
 }
 
-@Preview
-@Composable
-fun PreviewHomeScreen() {
-    val currentScreen = remember { mutableStateOf("Home") }
-    HomeScreen(onNavigate = { currentScreen.value = "Details" }, viewModel = MovieViewModel(), onNav = {currentScreen.value = "NewScreen"})
-}
+

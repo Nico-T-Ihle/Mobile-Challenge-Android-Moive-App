@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -28,7 +29,6 @@ interface MovieApiService {
     fun getMovies(): Call<List<Movie>>
 }
 
-// Retrofit Service Factory
 fun createRetrofitService(): MovieApiService {
     val httpClient = OkHttpClient.Builder().build()
 
@@ -41,10 +41,6 @@ fun createRetrofitService(): MovieApiService {
     return retrofit.create(MovieApiService::class.java)
 }
 
-// Movie Data Model
-data class Movie(val title: String, val posterUrl: String)
-
-// ViewModel zur Verwaltung der Movie-Daten
 class MovieViewModel : ViewModel() {
     var movies by mutableStateOf<List<Movie>>(emptyList())
         private set
@@ -64,20 +60,23 @@ class MovieViewModel : ViewModel() {
                 override fun onResponse(call: Call<List<Movie>>, response: Response<List<Movie>>) {
                     if (response.isSuccessful) {
                         movies = response.body() ?: emptyList()
+                        Log.d("MovieViewModel", "Movies fetched successfully: ${movies.size} movies")
                     } else {
-                        errorMessage = response.message()
+                        errorMessage = "Error: ${response.message()}"
+                        Log.e("MovieViewModel", "Error fetching movies: ${response.message()}")
                     }
                 }
 
                 override fun onFailure(call: Call<List<Movie>>, t: Throwable) {
                     errorMessage = t.message ?: "Unknown error"
+                    Log.e("MovieViewModel", "Error: ${t.message}")
                 }
             })
         }
     }
 }
 
-// Haupt-Screen mit ViewModel
+
 @Composable
 fun MovieScreen(viewModel: MovieViewModel) {
     if (viewModel.errorMessage.isNotEmpty()) {
@@ -113,7 +112,8 @@ fun MovieItem(movie: Movie) {
     }
 }
 
-// In der MainActivity das ViewModel bereitstellen
+
+@Preview
 @Composable
 fun MovieApp(viewModel: MovieViewModel = remember { MovieViewModel() }) {
     MovieScreen(viewModel)

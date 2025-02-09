@@ -130,30 +130,72 @@ fun MainScreen() {
                 onNavigate = { movie ->
                     val encodedTitle = Uri.encode(movie.title)
                     val encodedPosterUrl = Uri.encode(movie.posterUrl)
-                    val route = "MovieDetailScreen/$encodedTitle/${movie.year}/${movie.rating}/$encodedPosterUrl"
+                    val route = "MovieDetailScreen/$encodedTitle/${movie.year}/${movie.rating}/$encodedPosterUrl/${movie.revenue}/" +
+                            "${movie.releaseDate}/${Uri.encode(movie.director?.name)}/${Uri.encode(movie.director?.pictureUrl)}/${movie.runtime}/" +
+                            "${Uri.encode(movie.plot)}/${movie.reviews}/${movie.budget}/${movie.language}/${Uri.encode(
+                                movie.genres.toString()
+                            )}"
                     println("Navigating to: $route")
                     navController.navigate(route)
                 },
                 viewModel = viewModel,
-                onNav = {navController.navigate("NewScreen")}
+                onNav = { navController.navigate("NewScreen") },
+                navController = navController
             )
         }
 
         composable(
-            route = "MovieDetailScreen/{title}/{year}/{rating}/{posterUrl}",
+            route = "MovieDetailScreen/{title}/{year}/{rating}/{posterUrl}/{revenue}/{releaseDate}/{directorName}/{directorPictureUrl}/{runtime}/{overview}/{reviews}/{budget}/{language}/{genres}",
             arguments = listOf(
                 navArgument("title") { type = NavType.StringType },
                 navArgument("year") { type = NavType.StringType },
                 navArgument("rating") { type = NavType.FloatType },
-                navArgument("posterUrl") { type = NavType.StringType }
+                navArgument("posterUrl") { type = NavType.StringType },
+                navArgument("revenue") { type = NavType.IntType },
+                navArgument("releaseDate") { type = NavType.StringType },
+                navArgument("directorName") { type = NavType.StringType },
+                navArgument("directorPictureUrl") { type = NavType.StringType },
+                navArgument("runtime") { type = NavType.IntType },
+                navArgument("overview") { type = NavType.StringType },
+                navArgument("reviews") { type = NavType.IntType },
+                navArgument("budget") { type = NavType.IntType },
+                navArgument("language") { type = NavType.StringType },
+                navArgument("genres") { type = NavType.StringType }
             )
         ) { backStackEntry ->
+
             val title = backStackEntry.arguments?.getString("title") ?: "N/A"
             val year = backStackEntry.arguments?.getString("year") ?: "N/A"
             val rating = backStackEntry.arguments?.getFloat("rating") ?: 0.0f
             val posterUrl = backStackEntry.arguments?.getString("posterUrl") ?: ""
+            val revenue = backStackEntry.arguments?.getInt("revenue") ?: 0
+            val releaseDate = backStackEntry.arguments?.getString("releaseDate") ?: "N/A"
+            val directorName = backStackEntry.arguments?.getString("directorName") ?: "N/A"
+            val directorPictureUrl = backStackEntry.arguments?.getString("directorPictureUrl") ?: ""
+            val runtime = backStackEntry.arguments?.getInt("runtime") ?: 0
+            val overview = backStackEntry.arguments?.getString("overview") ?: "N/A"
+            val reviews = backStackEntry.arguments?.getInt("reviews") ?: 0
+            val budget = backStackEntry.arguments?.getInt("budget") ?: 0
+            val language = backStackEntry.arguments?.getString("language") ?: "N/A"
+            val genres = backStackEntry.arguments?.getString("genres") ?: ""
 
-            MovieDetailScreen(title, year, rating, posterUrl, navController)
+            MovieDetailScreen(
+                title,
+                year,
+                rating,
+                posterUrl,
+                revenue,
+                releaseDate,
+                directorName,
+                directorPictureUrl,
+                runtime,
+                overview,
+                reviews,
+                budget,
+                language,
+                genres,
+                navController
+            )
         }
 
         composable("NewScreen") {
@@ -162,13 +204,13 @@ fun MainScreen() {
     }
 }
 
+
 @Composable
 fun NewScreen(navController: NavHostController) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp)
     ) {
         Text("Dies ist der neue Bildschirm!")
-
 
         Button(
             onClick = {

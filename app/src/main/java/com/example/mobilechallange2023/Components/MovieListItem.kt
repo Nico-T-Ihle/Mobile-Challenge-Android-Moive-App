@@ -1,5 +1,6 @@
 package com.example.mobilechallange2023.Components
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -31,20 +32,25 @@ import com.example.mobilechallange2023.R
 
 @Composable
 fun MovieListItem(
-    onNavigate: (() -> Unit)? = null,
+    onNavigate: (String) -> Unit,
     moviePoster: String,
     title: String,
     releaseDate: String,
-    rating: Double,
+    rating: Double
 ) {
     val year = if (releaseDate.length >= 4) releaseDate.substring(0, 4) else "N/A"
     val displayTitle = if (title.length > 13) title.take(13) + "..." else title
     val filledStars = rating.toInt()
+    val route = "MovieDetailScreen/" +
+            Uri.encode(title) + "/" +
+            year + "/" +
+            rating + "/" +
+            Uri.encode(moviePoster)
 
     Column(
         modifier = Modifier
             .padding(bottom = 20.dp)
-            .clickable { onNavigate?.invoke() }
+            .clickable { onNavigate(route) } // TODO()
     ) {
         Row(
             modifier = Modifier
@@ -98,7 +104,7 @@ fun MovieListItem(
                                 .size(16.dp)
                                 .padding(end = 2.dp),
                             colorFilter = ColorFilter.tint(
-                                if (i <= filledStars) Color(0xFFFD9E02) else Color.Gray // Farbe basierend auf der Bewertung setzen
+                                if (i <= filledStars) Color(0xFFFD9E02) else Color.Gray
                             )
                         )
                     }
@@ -111,21 +117,11 @@ fun MovieListItem(
                     contentDescription = "Movie Poster",
                     modifier = Modifier
                         .size(25.dp)
+                        .clickable {
+                            println("Image clicked!")
+                        }
                 )
             }
-
         }
     }
-}
-
-
-@Preview
-@Composable
-fun PreviewTiltedGrid() {
-    MovieListItem(
-        moviePoster = "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        title = "The Dark Knight",
-        releaseDate = "2008-07-14",
-        rating = 4.2495
-    )
 }
