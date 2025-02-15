@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -41,23 +40,18 @@ fun MovieListItem(
     val year = if (releaseDate.length >= 4) releaseDate.substring(0, 4) else "N/A"
     val displayTitle = if (title.length > 13) title.take(13) + "..." else title
     val filledStars = rating.toInt()
-    val route = "MovieDetailScreen/" +
-            Uri.encode(title) + "/" +
-            year + "/" +
-            rating + "/" +
-            Uri.encode(moviePoster)
+    val route = "MovieDetailScreen/" + Uri.encode(title) + "/" + year + "/" + rating + "/" + Uri.encode(moviePoster)
 
     Column(
         modifier = Modifier
             .padding(bottom = 20.dp)
-            .clickable { onNavigate(route) } // TODO()
+            .clickable { onNavigate(route) }
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Column(
                 modifier = Modifier
                     .width(60.dp)
@@ -75,7 +69,6 @@ fun MovieListItem(
                         .clip(RoundedCornerShape(12.dp))
                 )
             }
-
             Column(
                 modifier = Modifier
                     .padding(start = 26.dp)
@@ -94,7 +87,6 @@ fun MovieListItem(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-
                 Row {
                     for (i in 1..5) {
                         Image(
@@ -111,15 +103,18 @@ fun MovieListItem(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            Column {
+            Column(
+                modifier = Modifier
+                    .clickable {
+                        println("test")
+                    }
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.bookmark),
                     contentDescription = "Movie Poster",
                     modifier = Modifier
-                        .size(25.dp)
-                        .clickable {
-                            println("Image clicked!")
-                        }
+                        .size(25.dp),
+                    colorFilter = ColorFilter.tint(Color.Red)
                 )
             }
         }

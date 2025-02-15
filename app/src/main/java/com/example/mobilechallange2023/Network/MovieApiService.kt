@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Callback
 import retrofit2.Response
 
-
 // API Interface
 interface MovieApiService {
     @GET("challenge/movies.json")
@@ -31,13 +30,11 @@ interface MovieApiService {
 
 fun createRetrofitService(): MovieApiService {
     val httpClient = OkHttpClient.Builder().build()
-
     val retrofit = Retrofit.Builder()
         .baseUrl("https://apps.agentur-loop.com/")
         .addConverterFactory(GsonConverterFactory.create())
         .client(httpClient)
         .build()
-
     return retrofit.create(MovieApiService::class.java)
 }
 
@@ -66,7 +63,6 @@ class MovieViewModel : ViewModel() {
                         Log.e("MovieViewModel", "Error fetching movies: ${response.message()}")
                     }
                 }
-
                 override fun onFailure(call: Call<List<Movie>>, t: Throwable) {
                     errorMessage = t.message ?: "Unknown error"
                     Log.e("MovieViewModel", "Error: ${t.message}")
@@ -75,7 +71,6 @@ class MovieViewModel : ViewModel() {
         }
     }
 }
-
 
 @Composable
 fun MovieScreen(viewModel: MovieViewModel) {
@@ -99,7 +94,6 @@ fun MovieList(movies: List<Movie>) {
 fun MovieItem(movie: Movie) {
     Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(text = movie.title, style = MaterialTheme.typography.bodyLarge)
-
         Image(
             painter = rememberAsyncImagePainter(movie.posterUrl),
             contentDescription = "Movie Poster",
@@ -107,11 +101,9 @@ fun MovieItem(movie: Movie) {
                 .fillMaxWidth()
                 .height(200.dp)
         )
-
         Spacer(modifier = Modifier.height(8.dp))
     }
 }
-
 
 @Preview
 @Composable

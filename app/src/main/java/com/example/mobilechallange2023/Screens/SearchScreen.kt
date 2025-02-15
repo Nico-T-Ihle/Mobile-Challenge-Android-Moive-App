@@ -87,7 +87,7 @@ fun SearchScreen(
                 ) {
                     TextField(
                         value = searchItem,
-                        onValueChange = { searchItem = it }, // Suchtext aktualisieren
+                        onValueChange = { searchItem = it },
                         placeholder = {
                             Text("Search", fontWeight = FontWeight.Bold, color = Color.Gray)
                         },

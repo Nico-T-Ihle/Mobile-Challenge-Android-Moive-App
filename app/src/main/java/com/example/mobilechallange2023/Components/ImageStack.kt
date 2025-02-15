@@ -21,7 +21,6 @@ fun TiltedGrid(viewModel: MovieViewModel) {
             gridState.scrollToItem(totalItems - 2)
         }
     }
-
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 90.dp),
         state = gridState,
