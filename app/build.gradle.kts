@@ -87,6 +87,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.hilt.android.v2405)
+    ksp(libs.hilt.compiler.v2405)
 
     // Dependency Injection
     implementation(libs.hilt.android)
@@ -98,4 +100,16 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
+
+    implementation("com.google.dagger:hilt-android:2.40.5")
+    ksp("com.google.dagger:hilt-compiler:2.40.5")
+
+    // Compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.4.0")
+    ksp("androidx.room:room-compiler:2.4.0")
+    implementation("androidx.room:room-ktx:2.4.0")
+
 }

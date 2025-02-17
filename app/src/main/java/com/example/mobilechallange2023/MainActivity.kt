@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
@@ -23,26 +24,48 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.mobilechallange2023.Components.CustomTextField
+import com.example.mobilechallange2023.Data.entity.User
+import com.example.mobilechallange2023.Data.repository.UserRepository
 import com.example.mobilechallange2023.Screens.HomeScreen
 import com.example.mobilechallange2023.Screens.LoginScreen
 import com.example.mobilechallange2023.Screens.MovieDetailScreen
 import com.example.mobilechallange2023.Screens.SearchScreen
 import com.example.mobilechallange2023.ui.theme.MobileChallange2023Theme
+import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var userRepository: UserRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            MobileChallange2023Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen()
-                }
+            val scope = rememberCoroutineScope()
+
+            scope.launch {
+                addDummyData()
             }
+
+            UserListScreen()
+        }
+    }
+
+    private suspend fun addDummyData() {
+        val users = listOf(
+            User(id = 0, name = "John Doe", age = 25),
+            User(id = 0, name = "Jane Smith", age = 30),
+            User(id = 0, name = "Alice Johnson", age = 22)
+        )
+
+        for (user in users) {
+            userRepository.insert(user)
         }
     }
 }
-
 
 @Composable
 fun MainScreen() {
