@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                 addDummyData()
             }
 
-            UserListScreen()
+            MainScreen()
         }
     }
 
