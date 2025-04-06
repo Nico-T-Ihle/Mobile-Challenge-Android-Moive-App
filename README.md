@@ -4,10 +4,6 @@
 
 This project was created as part of a personal Android Mobile Challenge in almost 3 days. The goal was to develop an app based on the given design.
 
-## Design
-
-You can find the app design [here](https://www.figma.com/design/KdgFeiPfWDM6S6OunWmA8B/Mobile-Challenge-2023).
-
 ## Features
 
 - Display a list of movies with details
